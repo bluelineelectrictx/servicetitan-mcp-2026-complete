@@ -8,30 +8,42 @@
 
 ## 💡 What This Unlocks
 
-**This MCP server gives AI direct access to your entire ServiceTitan workspace.** Instead of clicking through interfaces, you just *tell* it what you need.
+**This MCP server gives AI direct access to your ServiceTitan field service management platform.** Instead of manually dispatching jobs, tracking technicians, or managing invoices, just *tell* AI what you need.
 
-### 🎯 ServiceTitan-Native Power Moves
+### 🔧 Field Service Power Moves
 
-The AI can directly control your ServiceTitan account with natural language:
+The AI can manage your entire service operation with natural language:
 
-- **Smart automation** — Complex workflows in plain English
-- **Data intelligence** — Query, analyze, and export your ServiceTitan data
-- **Rapid operations** — Bulk actions that would take hours manually
-- **Cross-platform integration** — Combine ServiceTitan with other tools seamlessly
+| Use Case | What AI Does | Tools Used |
+|----------|--------------|------------|
+| **"Schedule HVAC repair for customer #1234 tomorrow at 2pm"** | Creates job with customer, location, timing, and assigns technician | `create_job`, `list_customers`, `list_technicians` |
+| **"Show me all open jobs assigned to technician Mike Rodriguez"** | Filters jobs by status and technician assignment | `list_jobs`, `list_technicians` |
+| **"Find high-value customers who haven't been serviced in 90 days"** | Cross-references invoices and job history to identify at-risk accounts | `list_customers`, `list_jobs`, `list_invoices` |
+| **"Generate weekly dispatch report: jobs completed, revenue, technician utilization"** | Aggregates job completions, invoice totals, and technician performance metrics | `list_jobs`, `list_invoices`, `list_technicians` |
+| **"Create urgent job for pipe burst at 123 Main St, notify on-call plumber"** | Creates priority job, finds available technician, schedules appointment | `create_job`, `list_technicians`, `list_appointments` |
 
-### 🔗 The Real Power: Combining Tools
+### 🔗 The Real Power: Workflow Automation
 
-AI can chain multiple ServiceTitan operations together:
+AI chains ServiceTitan operations together:
 
-- Query data → Filter results → Generate reports
-- Search records → Update fields → Notify team
-- Analyze metrics → Create tasks → Schedule follow-ups
+- **Revenue intelligence** → Query invoices → Identify trends → Flag at-risk customers
+- **Dispatch optimization** → Check technician availability → Match skills to job type → Schedule appointments
+- **Customer retention** → Analyze service history → Identify overdue maintenance → Create follow-up jobs
 
 ## 📦 What's Inside
 
-**124 API tools** covering the entire ServiceTitan platform (Field Service).
+**8 field service tools** covering jobs, customers, invoices, technicians, and appointments:
 
-All with proper error handling, automatic authentication, and TypeScript types.
+1. **`list_jobs`** — List and filter work orders by status, customer, technician, or date range
+2. **`get_job`** — Get detailed job info including line items, equipment, and service history
+3. **`create_job`** — Schedule new service jobs with customer, location, and priority
+4. **`list_customers`** — Search customers by name, email, phone, or account status
+5. **`get_customer`** — View complete customer profile with locations and service history
+6. **`list_invoices`** — Query invoices with filters for status, amount, customer, or job
+7. **`list_technicians`** — View field workers with skills, availability, and business unit
+8. **`list_appointments`** — Check scheduled appointments with booking windows and assignments
+
+All with automatic OAuth token refresh, proper error handling, and TypeScript types.
 
 ## 🚀 Quick Start
 
@@ -45,7 +57,14 @@ All with proper error handling, automatic authentication, and TypeScript types.
    npm run build
    ```
 
-2. **Get your ServiceTitan API credentials** (see Authentication section below)
+2. **Get your ServiceTitan API credentials:**
+   - Log in to ServiceTitan
+   - Go to **Settings → Integrations → API Application Access**
+   - Click **Create Application** and note your:
+     - Client ID
+     - Client Secret
+     - Tenant ID
+   - Required permissions: Jobs (Read/Write), Customers (Read), Invoices (Read), Dispatch (Read)
 
 3. **Configure Claude Desktop:**
    
@@ -58,9 +77,11 @@ All with proper error handling, automatic authentication, and TypeScript types.
      "mcpServers": {
        "servicetitan": {
          "command": "node",
-         "args": ["/ABSOLUTE/PATH/TO/servicetitan-mcp/dist/index.js"],
+         "args": ["/ABSOLUTE/PATH/TO/servicetitan-mcp-2026-complete/dist/index.js"],
          "env": {
-           "SERVICETITAN_API_KEY": "your-api-key-here"
+           "SERVICETITAN_CLIENT_ID": "your-client-id",
+           "SERVICETITAN_CLIENT_SECRET": "your-client-secret",
+           "SERVICETITAN_TENANT_ID": "your-tenant-id"
          }
        }
      }
@@ -74,7 +95,7 @@ All with proper error handling, automatic authentication, and TypeScript types.
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/servicetitan-mcp)
 
 1. Click the button above
-2. Set your ServiceTitan API credentials in Railway dashboard
+2. Set your ServiceTitan credentials in Railway dashboard
 3. Use the Railway URL as your MCP server endpoint
 
 ### Option 3: Docker
@@ -82,25 +103,45 @@ All with proper error handling, automatic authentication, and TypeScript types.
 ```bash
 docker build -t servicetitan-mcp .
 docker run -p 3000:3000 \
-  -e SERVICETITAN_API_KEY=your-key \
+  -e SERVICETITAN_CLIENT_ID=your-client-id \
+  -e SERVICETITAN_CLIENT_SECRET=your-secret \
+  -e SERVICETITAN_TENANT_ID=your-tenant \
   servicetitan-mcp
 ```
 
 ## 🔐 Authentication
 
-See the official [ServiceTitan API documentation](https://docs.servicetitan.com) for authentication details.
+ServiceTitan uses OAuth 2.0 client credentials flow:
 
-The MCP server handles token refresh automatically.
+1. **Get credentials**: ServiceTitan Settings → Integrations → API Application Access
+2. **Required scopes**: `jpm.jobs`, `crm.customers`, `accounting.invoices`, `dispatch`
+3. **Token refresh**: Handled automatically by the MCP server
+
+📚 **Official docs**: [ServiceTitan Developer Portal](https://developer.servicetitan.io/docs/authentication)
 
 ## 🎯 Example Prompts
 
-Once connected to Claude, you can use natural language. Examples:
+Once connected to Claude, use natural language:
 
-- *"Show me recent activity in ServiceTitan"*
-- *"Create a new record with these details..."*
-- *"Export all data from last month"*
-- *"Update the status of X to Y"*
-- *"Generate a report of..."*
+**Dispatch & Scheduling:**
+- *"Show me all jobs scheduled for today with status 'In Progress'"*
+- *"Create a job for customer 5678 at location 9012, job type 'AC Repair', priority Urgent"*
+- *"List all appointments for technician ID 234 next week"*
+
+**Customer Management:**
+- *"Find customers created in the last 30 days"*
+- *"Get full details for customer ID 1234 including service history"*
+- *"Search for customers with email ending in '@example.com'"*
+
+**Financial Analysis:**
+- *"List all invoices over $5,000 from the last quarter"*
+- *"Show me pending invoices for job 4567"*
+- *"Generate revenue report: total invoice amounts by month"*
+
+**Technician Operations:**
+- *"List all active technicians in business unit 3"*
+- *"Find available technicians for tomorrow afternoon"*
+- *"Show completed jobs for technician Mike this week"*
 
 ## 🛠️ Development
 
@@ -131,19 +172,27 @@ npm run test:coverage     # Coverage report
 
 ## 🐛 Troubleshooting
 
-### "Authentication failed"
-- Verify your API credentials are correct
-- Check that your API key hasn't been revoked
-- Ensure you have the necessary permissions
+### "ServiceTitan auth error: 401"
+- Double-check your Client ID and Client Secret are correct
+- Verify your Tenant ID matches your ServiceTitan account
+- Ensure your API application has the required permissions (Jobs, Customers, Invoices, Dispatch)
+- Check that your credentials haven't been revoked in ServiceTitan settings
 
 ### "Tools not appearing in Claude"
 - Restart Claude Desktop after updating config
-- Check that the path in `claude_desktop_config.json` is absolute
-- Verify the build completed successfully (`dist/index.js` exists)
+- Check that the path in `claude_desktop_config.json` is absolute (not relative)
+- Verify the build completed successfully: `ls dist/index.js`
+- Check Claude Desktop logs: `tail -f ~/Library/Logs/Claude/mcp*.log`
+
+### "Request timed out"
+- ServiceTitan API can be slow for large datasets — increase timeout or use pagination
+- Check your network connection and firewall settings
+- Verify ServiceTitan API status at [status.servicetitan.com](https://status.servicetitan.com)
 
 ## 📖 Resources
 
-- [ServiceTitan API Documentation](https://docs.servicetitan.com)
+- [ServiceTitan Developer Portal](https://developer.servicetitan.io/)
+- [ServiceTitan API Reference](https://developer.servicetitan.io/apis/)
 - [MCP Protocol Specification](https://modelcontextprotocol.io/)
 - [Claude Desktop Documentation](https://claude.ai/desktop)
 
@@ -152,9 +201,9 @@ npm run test:coverage     # Coverage report
 Contributions are welcome! Please:
 
 1. Fork the repo
-2. Create a feature branch (`git checkout -b feature/amazing-tool`)
-3. Commit your changes (`git commit -m 'Add amazing tool'`)
-4. Push to the branch (`git push origin feature/amazing-tool`)
+2. Create a feature branch (`git checkout -b feature/job-cancellation`)
+3. Commit your changes (`git commit -m 'Add job cancellation tool'`)
+4. Push to the branch (`git push origin feature/job-cancellation`)
 5. Open a Pull Request
 
 ## 📄 License
@@ -163,10 +212,10 @@ MIT License - see [LICENSE](LICENSE) for details
 
 ## 🙏 Credits
 
-Built by [MCPEngine](https://mcpengage.com) — AI infrastructure for business software.
+Built by [MCPEngage](https://mcpengage.com) — AI infrastructure for business software.
 
-Want more MCP servers? Check out our [full catalog](https://mcpengage.com) covering 30+ business platforms.
+Want more MCP servers? Check our [catalog](https://mcpengine.pages.dev) covering 30+ business platforms.
 
 ---
 
-**Questions?** Open an issue or join our [Discord community](https://discord.gg/mcpengine).
+**Questions?** Open an issue or join our [Discord community](https://discord.gg/mcpengage).
