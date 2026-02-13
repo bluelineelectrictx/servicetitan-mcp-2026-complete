@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ServiceTitan MCP Apps</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    h1 {
+      color: white;
+      text-align: center;
+      margin-bottom: 3rem;
+      font-size: 2.5rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .app-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .app-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+    }
+    .app-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .app-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 0.5rem;
+    }
+    .app-description {
+      color: #718096;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .category {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      background: #e6fffa;
+      color: #047857;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔧 ServiceTitan MCP Apps</h1>
+    <div class="apps-grid" id="apps"></div>
+  </div>
+  
+  <script>
+    const apps = [
+      { name: 'Job Dashboard', icon: '📊', category: 'Jobs', file: 'job-dashboard.html', desc: 'Overview of all jobs with status, priority, and quick actions' },
+      { name: 'Job Detail', icon: '🔍', category: 'Jobs', file: 'job-detail.html', desc: 'Detailed job information, appointments, and history' },
+      { name: 'Job Grid', icon: '📋', category: 'Jobs', file: 'job-grid.html', desc: 'Searchable and filterable grid of all jobs' },
+      { name: 'Customer Detail', icon: '👤', category: 'Customers', file: 'customer-detail.html', desc: 'Complete customer profile with contacts and locations' },
+      { name: 'Customer Grid', icon: '👥', category: 'Customers', file: 'customer-grid.html', desc: 'Searchable customer database with quick filters' },
+      { name: 'Invoice Dashboard', icon: '💰', category: 'Accounting', file: 'invoice-dashboard.html', desc: 'Revenue overview and invoice status tracking' },
+      { name: 'Invoice Detail', icon: '📄', category: 'Accounting', file: 'invoice-detail.html', desc: 'Invoice line items, payments, and customer details' },
+      { name: 'Estimate Builder', icon: '✍️', category: 'Sales', file: 'estimate-builder.html', desc: 'Create and manage estimates with line items' },
+      { name: 'Dispatch Board', icon: '🗓️', category: 'Dispatch', file: 'dispatch-board.html', desc: 'Visual dispatch board for scheduling and assignments' },
+      { name: 'Technician Dashboard', icon: '👷', category: 'Technicians', file: 'technician-dashboard.html', desc: 'Technician performance and availability overview' },
+      { name: 'Technician Detail', icon: '🔧', category: 'Technicians', file: 'technician-detail.html', desc: 'Individual technician stats, schedule, and skills' },
+      { name: 'Equipment Tracker', icon: '⚙️', category: 'Equipment', file: 'equipment-tracker.html', desc: 'Track equipment by location with warranty status' },
+      { name: 'Membership Manager', icon: '🎫', category: 'Memberships', file: 'membership-manager.html', desc: 'Manage recurring memberships and renewals' },
+      { name: 'Revenue Dashboard', icon: '📈', category: 'Reporting', file: 'revenue-dashboard.html', desc: 'Revenue trends, breakdowns, and forecasting' },
+      { name: 'Performance Metrics', icon: '📊', category: 'Reporting', file: 'performance-metrics.html', desc: 'Technician and business unit performance KPIs' },
+      { name: 'Call Tracking', icon: '📞', category: 'Reporting', file: 'call-tracking.html', desc: 'Inbound call analytics and booking conversion' },
+      { name: 'Lead Source Analytics', icon: '🎯', category: 'Marketing', file: 'lead-source-analytics.html', desc: 'Marketing ROI and lead source performance' },
+      { name: 'Schedule Calendar', icon: '📅', category: 'Dispatch', file: 'schedule-calendar.html', desc: 'Calendar view of all appointments and availability' },
+      { name: 'Appointment Manager', icon: '⏰', category: 'Dispatch', file: 'appointment-manager.html', desc: 'Create, reschedule, and manage appointments' },
+      { name: 'Marketing Dashboard', icon: '📣', category: 'Marketing', file: 'marketing-dashboard.html', desc: 'Campaign performance and lead tracking' },
+    ];
+
+    const appsContainer = document.getElementById('apps');
+    apps.forEach(app => {
+      const card = document.createElement('a');
+      card.className = 'app-card';
+      card.href = app.file;
+      card.innerHTML = `
+        <div class="category">${app.category}</div>
+        <div class="app-icon">${app.icon}</div>
+        <div class="app-title">${app.name}</div>
+        <div class="app-description">${app.desc}</div>
+      `;
+      appsContainer.appendChild(card);
+    });
+  </script>
+</body>
+</html>

@@ -1,44 +1,43 @@
 {
-  "name": "servicetitan-mcp-server",
+  "name": "@mcpengine/servicetitan",
   "version": "1.0.0",
-  "description": "MCP server for ServiceTitan API - 2026 Complete Version",
+  "description": "ServiceTitan MCP Server - Complete field service management integration with 108+ tools and 15+ React apps",
+  "main": "dist/main.js",
   "type": "module",
-  "main": "dist/index.js",
-  "author": "MCPEngage <hello@mcpengage.com>",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/BusyBee3333/ServiceTitan-MCP-2026-Complete.git"
+  "bin": {
+    "servicetitan-mcp": "./dist/main.js"
+  },
+  "scripts": {
+    "build": "tsc && npm run build:apps && chmod +x dist/main.js",
+    "build:apps": "cd src/ui/react-app && npm run build",
+    "dev": "tsx src/main.ts",
+    "watch": "tsc --watch",
+    "start": "node dist/main.js",
+    "prepare": "npm run build",
+    "test": "echo \"Tests coming soon\""
   },
   "keywords": [
     "mcp",
     "servicetitan",
-    "servicetitan",
-    "api",
-    "ai"
+    "field-service",
+    "dispatch",
+    "crm",
+    "hvac",
+    "plumbing",
+    "electrical"
   ],
-  "scripts": {
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "tsx src/index.ts",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "clean": "rm -rf dist",
-    "rebuild": "npm run clean && npm run build"
-  },
+  "author": "MCP Engine",
+  "license": "MIT",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^0.5.0",
-    "zod": "^3.22.4",
-    "dotenv": "^16.3.1"
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7",
+    "zod": "^3.22.0"
   },
   "devDependencies": {
-    "@types/node": "^20.10.0",
-    "@types/jest": "^29.5.0",
-    "jest": "^29.5.0",
-    "ts-jest": "^29.1.0",
+    "@types/node": "^22.10.5",
     "tsx": "^4.7.0",
-    "typescript": "^5.3.0"
+    "typescript": "^5.7.3"
   },
   "engines": {
     "node": ">=18.0.0"

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Dashboard - ServiceTitan MCP</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f7fafc;
+      padding: 2rem;
+    }
+    .dashboard { max-width: 1400px; margin: 0 auto; }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    h1 { color: #2d3748; font-size: 2rem; }
+    .back-link {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .stat-label {
+      color: #718096;
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+    }
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #2d3748;
+    }
+    .stat-change {
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+    .stat-change.positive { color: #48bb78; }
+    .stat-change.negative { color: #f56565; }
+    .jobs-container {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    .filters {
+      padding: 1.5rem;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    select, input {
+      padding: 0.5rem 1rem;
+      border: 1px solid #cbd5e0;
+      border-radius: 6px;
+      font-size: 0.875rem;
+    }
+    .job-row {
+      display: grid;
+      grid-template-columns: 100px 1fr 150px 120px 120px 150px;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid #e2e8f0;
+      align-items: center;
+    }
+    .job-row:hover {
+      background: #f7fafc;
+    }
+    .job-header {
+      font-weight: 600;
+      color: #4a5568;
+      background: #edf2f7;
+    }
+    .job-number {
+      font-weight: 600;
+      color: #667eea;
+    }
+    .status {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .status.scheduled { background: #bee3f8; color: #2c5282; }
+    .status.in-progress { background: #feebc8; color: #7c2d12; }
+    .status.completed { background: #c6f6d5; color: #22543d; }
+    .priority {
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .priority.high { background: #fed7d7; color: #742a2a; }
+    .priority.normal { background: #e6fffa; color: #234e52; }
+    .priority.low { background: #faf5ff; color: #44337a; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+    
+    function JobDashboard() {
+      const [jobs, setJobs] = useState([
+        { id: 1, jobNumber: 'J-2024-001', customer: 'John Smith', status: 'scheduled', priority: 'normal', type: 'HVAC Maintenance', date: '2024-02-15' },
+        { id: 2, jobNumber: 'J-2024-002', customer: 'Sarah Johnson', status: 'in-progress', priority: 'high', type: 'Emergency Repair', date: '2024-02-14' },
+        { id: 3, jobNumber: 'J-2024-003', customer: 'Mike Davis', status: 'completed', priority: 'normal', type: 'Installation', date: '2024-02-14' },
+        { id: 4, jobNumber: 'J-2024-004', customer: 'Emily Wilson', status: 'scheduled', priority: 'low', type: 'Inspection', date: '2024-02-16' },
+        { id: 5, jobNumber: 'J-2024-005', customer: 'Robert Brown', status: 'in-progress', priority: 'high', type: 'HVAC Repair', date: '2024-02-15' },
+      ]);
+      
+      const [statusFilter, setStatusFilter] = useState('all');
+      const [priorityFilter, setPriorityFilter] = useState('all');
+      
+      const stats = {
+        total: jobs.length,
+        scheduled: jobs.filter(j => j.status === 'scheduled').length,
+        inProgress: jobs.filter(j => j.status === 'in-progress').length,
+        completed: jobs.filter(j => j.status === 'completed').length,
+      };
+      
+      const filteredJobs = jobs.filter(job => {
+        if (statusFilter !== 'all' && job.status !== statusFilter) return false;
+        if (priorityFilter !== 'all' && job.priority !== priorityFilter) return false;
+        return true;
+      });
+      
+      return (
+        <div className="dashboard">
+          <div className="header">
+            <h1>📊 Job Dashboard</h1>
+            <a href="index.html" className="back-link">← Back to Apps</a>
+          </div>
+          
+          <div className="stats">
+            <div className="stat-card">
+              <div className="stat-label">Total Jobs</div>
+              <div className="stat-value">{stats.total}</div>
+              <div className="stat-change positive">↑ 12% from last week</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-label">Scheduled</div>
+              <div className="stat-value">{stats.scheduled}</div>
+              <div className="stat-change positive">↑ 8%</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-label">In Progress</div>
+              <div className="stat-value">{stats.inProgress}</div>
+              <div className="stat-change negative">↓ 3%</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-label">Completed</div>
+              <div className="stat-value">{stats.completed}</div>
+              <div className="stat-change positive">↑ 15%</div>
+            </div>
+          </div>
+          
+          <div className="jobs-container">
+            <div className="filters">
+              <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                <option value="all">All Statuses</option>
+                <option value="scheduled">Scheduled</option>
+                <option value="in-progress">In Progress</option>
+                <option value="completed">Completed</option>
+              </select>
+              
+              <select value={priorityFilter} onChange={(e) => setPriorityFilter(e.target.value)}>
+                <option value="all">All Priorities</option>
+                <option value="high">High</option>
+                <option value="normal">Normal</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+            
+            <div className="job-row job-header">
+              <div>Job #</div>
+              <div>Customer</div>
+              <div>Type</div>
+              <div>Status</div>
+              <div>Priority</div>
+              <div>Date</div>
+            </div>
+            
+            {filteredJobs.map(job => (
+              <div key={job.id} className="job-row">
+                <div className="job-number">{job.jobNumber}</div>
+                <div>{job.customer}</div>
+                <div>{job.type}</div>
+                <div><span className={`status ${job.status}`}>{job.status.replace('-', ' ')}</span></div>
+                <div><span className={`priority ${job.priority}`}>{job.priority}</span></div>
+                <div>{job.date}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+    
+    ReactDOM.render(<JobDashboard />, document.getElementById('root'));
+  </script>
+</body>
+</html>
