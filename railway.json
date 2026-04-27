@@ -3,6 +3,6 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "npx mcp-proxy --port $PORT --transport streamable-http node dist/main.js"
+    "startCommand": "npx mcp-proxy --port $PORT --transport sse node dist/main.js"
   }
 }
