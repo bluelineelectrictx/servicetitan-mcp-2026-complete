@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "tsc && npm run build:apps && chmod +x dist/main.js",
-    "build:apps": "cd src/ui/react-app && npm run build",
+    "build:apps": "cd src/ui/react-app && npm ci --include=dev && npm run build",
     "dev": "tsx src/main.ts",
     "watch": "tsc --watch",
     "start": "node dist/main.js",
