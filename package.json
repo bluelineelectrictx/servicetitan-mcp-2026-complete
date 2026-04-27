@@ -12,7 +12,7 @@
     "build:apps": "cd src/ui/react-app && npm ci --include=dev && npm run build",
     "dev": "tsx src/main.ts",
     "watch": "tsc --watch",
-    "start": "node dist/main.js",
+    "start": "npx mcp-proxy --port $PORT --transport streamable-http node dist/main.js",
     "prepare": "npm run build",
     "test": "echo \"Tests coming soon\""
   },
